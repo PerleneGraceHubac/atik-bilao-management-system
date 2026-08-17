@@ -11,6 +11,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.perlene.abms",
       "adaptiveIcon": {
         "backgroundColor": "#FBF7F1",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -38,6 +39,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "824f4c46-d5ae-4f81-8dc0-7e9be217db9b"
+      }
     }
   }
 }
