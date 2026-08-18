@@ -5,10 +5,12 @@ import { EmptyState, ErrorState, LoadingState } from '@/components/layout/States
 import { Card } from '@/components/ui/Card';
 import { OrderCard } from '@/components/orders/OrderCard';
 import { useCustomerDetail } from '@/hooks/useCustomers';
+import { useUpdateOrderStatus } from '@/hooks/useOrders';
 
 export default function CustomerDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const detail = useCustomerDetail(id);
+  const updateStatus = useUpdateOrderStatus();
 
   if (detail.isLoading) {
     return (
@@ -37,7 +39,13 @@ export default function CustomerDetailScreen() {
       </Card>
       <Text className="mb-2 mt-5 text-lg font-bold text-brown">Previous orders</Text>
       {orders.map((order) => (
-        <OrderCard key={order.id} order={order} onPress={() => router.push(`/(tabs)/orders/${order.id}`)} />
+        <OrderCard
+          key={order.id}
+          order={order}
+          onPress={() => router.push(`/(tabs)/orders/${order.id}`)}
+          completing={updateStatus.isPending && updateStatus.variables?.id === order.id}
+          onMarkCompleted={() => updateStatus.mutate({ id: order.id, status: 'completed' })}
+        />
       ))}
       {orders.length === 0 ? <EmptyState title="No orders" message="This customer has no saved orders yet." /> : null}
     </Screen>

@@ -7,7 +7,7 @@ import { EmptyState, ErrorState, LoadingState } from '@/components/layout/States
 import { OrderCard } from '@/components/orders/OrderCard';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { FilterChips, SearchBar } from '@/components/ui/SearchFilter';
-import { useDeleteOrder, useOrders } from '@/hooks/useOrders';
+import { useDeleteOrder, useOrders, useUpdateOrderStatus } from '@/hooks/useOrders';
 import { ORDER_FILTERS } from '@/lib/constants';
 import { useFilterStore } from '@/stores/filterStore';
 import { colors } from '@/theme/colors';
@@ -21,6 +21,7 @@ export default function OrdersScreen() {
   const setSearch = useFilterStore((state) => state.setSearchQuery);
   const orders = useOrders({ filter, search });
   const remove = useDeleteOrder();
+  const updateStatus = useUpdateOrderStatus();
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   return (
@@ -45,6 +46,8 @@ export default function OrdersScreen() {
               order={item}
               onPress={() => router.push(`/(tabs)/orders/${item.id}`)}
               onLongPress={() => setPendingDelete(item.id)}
+              completing={updateStatus.isPending && updateStatus.variables?.id === item.id}
+              onMarkCompleted={() => updateStatus.mutate({ id: item.id, status: 'completed' })}
             />
           )}
           ListEmptyComponent={

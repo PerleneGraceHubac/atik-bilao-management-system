@@ -10,11 +10,17 @@ export function OrderCard({
   order,
   onPress,
   onLongPress,
+  onMarkCompleted,
+  completing = false,
 }: {
   order: OrderListItem;
   onPress: () => void;
   onLongPress?: () => void;
+  onMarkCompleted?: () => void;
+  completing?: boolean;
 }) {
+  const canComplete = order.status === 'pending' || order.status === 'preparing';
+
   return (
     <Pressable
       onPress={onPress}
@@ -43,6 +49,16 @@ export function OrderCard({
         </Text>
         <Text className="text-base font-bold text-gold">{formatPeso(order.totalAmount)}</Text>
       </View>
+      {canComplete && onMarkCompleted ? (
+        <Pressable
+          disabled={completing}
+          onPress={onMarkCompleted}
+          className={`mt-3 min-h-[44px] items-center justify-center rounded-xl bg-sand ${completing ? 'opacity-50' : ''}`}>
+          <Text className="text-sm font-semibold text-brown">
+            {completing ? 'Saving…' : 'Mark completed'}
+          </Text>
+        </Pressable>
+      ) : null}
     </Pressable>
   );
 }

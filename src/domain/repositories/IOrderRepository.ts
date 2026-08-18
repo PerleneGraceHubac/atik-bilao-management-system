@@ -5,6 +5,7 @@ import type {
   Order,
   OrderFilters,
   OrderListItem,
+  OrderStatus,
   UpsertOrderInput,
 } from '@/domain/entities';
 
@@ -13,6 +14,7 @@ export interface IOrderRepository {
   getOrderById(id: string): Promise<Order>;
   createOrder(input: UpsertOrderInput): Promise<Order>;
   updateOrder(id: string, input: UpsertOrderInput): Promise<Order>;
+  updateOrderStatus(id: string, status: OrderStatus): Promise<void>;
   deleteOrder(id: string): Promise<void>;
   getOrderStats(): Promise<DashboardStats>;
   getOrdersByDate(date: string): Promise<OrderListItem[]>;

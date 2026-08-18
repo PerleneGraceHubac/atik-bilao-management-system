@@ -8,6 +8,7 @@ import type {
   Order,
   OrderFilters,
   OrderListItem,
+  OrderStatus,
   UpsertOrderInput,
 } from '@/domain/entities';
 import type { IOrderRepository } from '@/domain/repositories/IOrderRepository';
@@ -146,6 +147,12 @@ export const orderRepository: IOrderRepository = {
     throwIfError(deleteError, 'Could not refresh order items.');
     await insertItems(id, input.items);
     return this.getOrderById(id);
+  },
+
+  async updateOrderStatus(id: string, status: OrderStatus): Promise<void> {
+    const supabase = getSupabase();
+    const { error } = await supabase.from('orders').update({ status }).eq('id', id);
+    throwIfError(error, 'Could not update order status.');
   },
 
   async deleteOrder(id: string): Promise<void> {

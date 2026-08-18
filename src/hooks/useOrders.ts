@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { orderRepository } from '@/data/repositories/orderRepository';
-import type { OrderFilters, UpsertOrderInput } from '@/domain/entities';
+import type { OrderFilters, OrderStatus, UpsertOrderInput } from '@/domain/entities';
 import { queryKeys } from '@/lib/queryKeys';
 
 export function useOrders(filters: OrderFilters) {
@@ -69,6 +69,15 @@ export function useUpdateOrder() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpsertOrderInput }) =>
       orderRepository.updateOrder(id, input),
+    onSuccess: () => invalidateOrders(queryClient),
+  });
+}
+
+export function useUpdateOrderStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: OrderStatus }) =>
+      orderRepository.updateOrderStatus(id, status),
     onSuccess: () => invalidateOrders(queryClient),
   });
 }

@@ -105,7 +105,6 @@ grant usage on schema public to anon, authenticated;
 grant all on all tables in schema public to anon, authenticated;
 grant all on all sequences in schema public to anon, authenticated;
 
--- Seed default sizes
 insert into public.bilao_sizes (name, sort_order)
 select * from (values
   ('Small', 1),
@@ -115,25 +114,39 @@ select * from (values
 ) as seed(name, sort_order)
 where not exists (select 1 from public.bilao_sizes);
 
--- Sample dishes so the family can start taking orders immediately
 insert into public.dishes (name, sort_order)
-select * from (values
-  ('Pancit Canton', 1),
-  ('Palabok', 2),
-  ('Spaghetti', 3),
-  ('Carbonara', 4),
-  ('Fried Chicken', 5),
-  ('Lumpiang Shanghai', 6)
+select seed.name, seed.sort_order
+from (values
+  ('Fried Chicken', 1),
+  ('Pancit Sotanghon', 2),
+  ('Pancit Bam-i', 3),
+  ('Fish Fillet', 4),
+  ('Chicken Fillet', 5),
+  ('Cordon Bleu', 6),
+  ('Pork Lollipop', 7),
+  ('Pork Larocca', 8),
+  ('Buttered Shrimp', 9),
+  ('Lumpiang Shanghai', 10),
+  ('Vegetable Lumpia', 11),
+  ('Pork Humba', 12),
+  ('Sweet & Sour', 13),
+  ('Escabeche', 14),
+  ('Menudo', 15),
+  ('Bola-Bola', 16),
+  ('Chopsuey', 17),
+  ('Spaghetti', 18)
 ) as seed(name, sort_order)
-where not exists (select 1 from public.dishes);
+where not exists (
+  select 1 from public.dishes d where d.name = seed.name
+);
 
 insert into public.dish_prices (dish_id, size_id, unit_price)
 select d.id, s.id,
   case s.name
-    when 'Small' then 450
-    when 'Medium' then 650
-    when 'Large' then 850
-    else 1100
+    when 'Small' then 300
+    when 'Medium' then 400
+    when 'Large' then 600
+    else 900
   end
 from public.dishes d
 cross join public.bilao_sizes s
